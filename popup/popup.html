@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>答题助手</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>答题助手</h1>
+    </div>
+
+    <div class="config-section">
+      <div class="config-item">
+        <label for="apiUrl">API 地址</label>
+        <input type="text" id="apiUrl" placeholder="请输入 API 地址">
+      </div>
+      <div class="config-item">
+        <label for="apiKey">API 密钥</label>
+        <input type="password" id="apiKey" placeholder="请输入 API 密钥">
+      </div>
+      <div class="config-item">
+        <label for="modelName">模型名称</label>
+        <input type="text" id="modelName" placeholder="请输入模型名称">
+      </div>
+      <button id="saveConfig" class="btn-primary">保存配置</button>
+    </div>
+
+    <div class="question-section">
+      <label for="questionText">问题内容</label>
+      <textarea id="questionText" placeholder="请输入或选择问题内容"></textarea>
+      <button id="searchAnswer" class="btn-primary">搜索答案</button>
+    </div>
+
+    <div class="answer-section">
+      <label>答案</label>
+      <div id="answerContent" class="answer-content">
+        <p class="placeholder">答案将显示在这里</p>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span id="statusText">就绪</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
