@@ -1,14 +1,18 @@
 chrome.runtime.onInstalled.addListener(function() {
-  chrome.contextMenus.create({
-    id: 'searchAnswer',
-    title: '使用答题助手搜索答案',
-    contexts: ['selection']
-  });
+  console.log('答题助手已安装');
 });
 
-chrome.contextMenus.onClicked.addListener(function(info, tab) {
-  if (info.menuItemId === 'searchAnswer' && info.selectionText) {
-    chrome.action.openPopup();
+chrome.commands.onCommand.addListener(function(command) {
+  if (command === 'search-answer') {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'triggerSearch' }, function(response) {
+          if (chrome.runtime.lastError) {
+            console.error('发送消息失败:', chrome.runtime.lastError);
+          }
+        });
+      }
+    });
   }
 });
 
@@ -29,7 +33,7 @@ async function searchAnswer(question, config) {
   try {
     const apiUrl = config.apiUrl;
     const apiKey = config.apiKey;
-    const modelName = config.modelName || 'gpt-3.5-turbo';
+    const modelName = config.modelName || 'Qwen/Qwen2.5-7B-Instruct';
 
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -50,13 +54,23 @@ async function searchAnswer(question, config) {
           }
         ],
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1000,
+        stream: false
       })
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+      const errorText = await response.text();
+      let errorMessage = `HTTP ${response.status}`;
+      
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.message || errorData.error?.message || errorMessage;
+      } catch (e) {
+        console.error('解析错误响应失败:', e);
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();

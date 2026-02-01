@@ -1,6 +1,6 @@
 const CONFIG = {
-  DEFAULT_API_URL: 'https://api.openai.com/v1/chat/completions',
-  DEFAULT_MODEL: 'gpt-3.5-turbo',
+  DEFAULT_API_URL: 'https://api.siliconflow.cn/v1/chat/completions',
+  DEFAULT_MODEL: 'Qwen/Qwen2.5-7B-Instruct',
   DEFAULT_TEMPERATURE: 0.7,
   DEFAULT_MAX_TOKENS: 1000,
   STORAGE_KEY: 'answerAssistantConfig'
