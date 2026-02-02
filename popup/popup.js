@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const apiUrlInput = document.getElementById('apiUrl');
   const apiKeyInput = document.getElementById('apiKey');
   const modelNameInput = document.getElementById('modelName');
+  const shortcutKeyInput = document.getElementById('shortcutKey');
   const directOutputCheckbox = document.getElementById('directOutput');
   const autoUpdateCheckbox = document.getElementById('autoUpdate');
   const saveConfigBtn = document.getElementById('saveConfig');
@@ -14,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
       modelNameInput.value = result.modelName || 'Qwen/Qwen2.5-7B-Instruct';
       if (result.directOutput !== undefined) directOutputCheckbox.checked = result.directOutput;
       if (result.autoUpdate !== undefined) autoUpdateCheckbox.checked = result.autoUpdate;
+    });
+
+    chrome.commands.getAll(function(commands) {
+      const shortcut = commands['search-answer']?.shortcut || 'Ctrl+Shift+Q';
+      shortcutKeyInput.value = shortcut;
     });
   }
 
