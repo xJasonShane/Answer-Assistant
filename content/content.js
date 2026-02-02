@@ -1,6 +1,10 @@
 let currentAnswerBox = null;
 
+console.log('答题助手 content script 已加载');
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('收到消息:', request.action, request);
+
   if (request.action === 'getSelectedText') {
     const selectedText = window.getSelection().toString().trim();
     sendResponse({ text: selectedText });
@@ -11,9 +15,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     hideAnswerBox();
     sendResponse({ success: true });
   } else if (request.action === 'triggerSearch') {
+    console.log('触发搜索答案');
     searchAnswer();
     sendResponse({ success: true });
   }
+
+  return true;
 });
 
 function getSelectedText() {
@@ -81,6 +88,7 @@ function formatAnswer(answer) {
 
 async function searchAnswer() {
   const selectedText = getSelectedText();
+  console.log('选中的文本:', selectedText);
 
   if (!selectedText) {
     alert('请先选择问题文本');
@@ -100,6 +108,8 @@ async function searchAnswer() {
 
   try {
     chrome.storage.local.get(['apiUrl', 'apiKey', 'modelName'], function(config) {
+      console.log('加载的配置:', config);
+
       if (!config.apiUrl || !config.apiKey) {
         hideAnswerBox();
         showErrorBox('请先配置 API 地址和密钥', position);
@@ -111,6 +121,8 @@ async function searchAnswer() {
         question: selectedText,
         config: config
       }, function(response) {
+        console.log('收到响应:', response);
+
         hideAnswerBox();
 
         if (response.success) {
@@ -121,6 +133,7 @@ async function searchAnswer() {
       });
     });
   } catch (error) {
+    console.error('搜索答案出错:', error);
     hideAnswerBox();
     showErrorBox('发生错误: ' + error.message, position);
   }
