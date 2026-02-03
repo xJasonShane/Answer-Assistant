@@ -1,4 +1,4 @@
-let currentAnswerBox = null;
+let currentBox = null;
 
 console.log('答题助手 content script 已加载');
 
@@ -7,15 +7,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === 'triggerSearch') {
     console.log('执行搜索');
-    doSearch();
+    performSearch();
     sendResponse({ success: true });
   }
 
   return true;
 });
 
-function doSearch() {
-  const selectedText = window.getSelection().toString().trim();
+function performSearch() {
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
   console.log('选中文本:', selectedText);
 
   if (!selectedText) {
@@ -23,7 +24,6 @@ function doSearch() {
     return;
   }
 
-  const selection = window.getSelection();
   if (!selection.rangeCount || selection.rangeCount === 0) {
     alert('无法获取选中文本位置');
     return;
@@ -36,6 +36,8 @@ function doSearch() {
     y: rect.bottom + window.scrollY + 10,
     width: rect.width
   };
+
+  console.log('答案位置:', position);
 
   showLoading(position);
 
@@ -67,7 +69,7 @@ function doSearch() {
 
 function showLoading(position) {
   hideBox();
-  currentAnswerBox = createBox(`
+  currentBox = createBox(`
     <div class="answer-assistant-header">
       <span class="answer-assistant-title">答题助手</span>
       <button class="answer-assistant-close" data-close="true">×</button>
@@ -83,7 +85,7 @@ function showLoading(position) {
 
 function showAnswer(answer, position) {
   hideBox();
-  currentAnswerBox = createBox(`
+  currentBox = createBox(`
     <div class="answer-assistant-header">
       <span class="answer-assistant-title">答题助手</span>
       <button class="answer-assistant-close" data-close="true">×</button>
@@ -96,7 +98,7 @@ function showAnswer(answer, position) {
 
 function showError(error, position) {
   hideBox();
-  currentAnswerBox = createBox(`
+  currentBox = createBox(`
     <div class="answer-assistant-header">
       <span class="answer-assistant-title">答题助手</span>
       <button class="answer-assistant-close" data-close="true">×</button>
@@ -117,15 +119,17 @@ function createBox(html, position) {
   document.body.appendChild(box);
 
   const closeBtn = box.querySelector('[data-close="true"]');
-  closeBtn.addEventListener('click', hideBox);
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideBox);
+  }
 
   return box;
 }
 
 function hideBox() {
-  if (currentAnswerBox) {
-    currentAnswerBox.remove();
-    currentAnswerBox = null;
+  if (currentBox) {
+    currentBox.remove();
+    currentBox = null;
   }
 }
 
@@ -139,7 +143,7 @@ function formatAnswer(answer) {
 }
 
 document.addEventListener('click', (event) => {
-  if (currentAnswerBox && !currentAnswerBox.contains(event.target)) {
+  if (currentBox && !currentBox.contains(event.target)) {
     hideBox();
   }
 });
