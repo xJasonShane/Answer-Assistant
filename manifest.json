@@ -4,10 +4,7 @@
   "version": "1.0.0",
   "description": "智能答题助手，使用AI模型搜索问题答案",
   "permissions": [
-    "activeTab",
-    "storage",
-    "scripting",
-    "commands"
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -21,7 +18,7 @@
     }
   },
   "background": {
-    "service_worker": "background/background.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
