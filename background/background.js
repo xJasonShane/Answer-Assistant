@@ -7,6 +7,8 @@ const DEFAULT_CONFIG = {
   showInPage: true
 };
 
+let lastSelectedText = '';
+
 chrome.runtime.onInstalled.addListener(() => {
   console.log('答题助手已安装');
   createContextMenu();
@@ -24,36 +26,22 @@ function createContextMenu() {
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === 'search-answer' && info.selectionText) {
-    chrome.tabs.sendMessage(tab.id, {
-      action: 'triggerSearchWithText',
-      text: info.selectionText
-    }, (response) => {
-      if (chrome.runtime.lastError) {
-        console.log('Content script not ready, injecting...');
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          files: ['content/content.js']
-        }, () => {
-          chrome.tabs.sendMessage(tab.id, {
-            action: 'triggerSearchWithText',
-            text: info.selectionText
-          });
-        });
-      }
-    });
+    lastSelectedText = info.selectionText;
     chrome.action.openPopup();
   }
 });
 
 chrome.commands.onCommand.addListener((command, tab) => {
-  console.log('快捷键触发:', command, '标签页:', tab);
+  console.log('快捷键触发:', command);
 
   if (command === 'search-answer') {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]) {
-        console.log('发送消息到标签页:', tabs[0].id);
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'triggerSearch' }, (response) => {
-          console.log('收到响应:', response);
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'getSelectedText' }, (response) => {
+          if (response && response.text) {
+            lastSelectedText = response.text;
+          }
+          chrome.action.openPopup();
         });
       }
     });
@@ -62,6 +50,12 @@ chrome.commands.onCommand.addListener((command, tab) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('收到消息:', request.action);
+
+  if (request.action === 'getLastSelectedText') {
+    sendResponse({ text: lastSelectedText });
+    lastSelectedText = '';
+    return false;
+  }
 
   if (request.action === 'searchAnswer') {
     searchAnswer(request.question, request.config)

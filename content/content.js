@@ -8,9 +8,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('收到消息:', request.action);
 
   if (request.action === 'getSelectedText') {
-    const selection = window.getSelection();
-    const text = selection.toString().trim();
-    sendResponse({ text: text });
+    try {
+      const selection = window.getSelection();
+      const text = selection.toString().trim();
+      console.log('选中文本:', text);
+      sendResponse({ text: text });
+    } catch (e) {
+      console.error('获取选中文本失败:', e);
+      sendResponse({ text: '' });
+    }
     return false;
   }
 

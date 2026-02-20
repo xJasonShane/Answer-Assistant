@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
   loadConfig();
   loadHistory();
   initEventListeners();
+  getLastSelectedText();
   tryFillSelectedText();
 });
 
@@ -162,6 +163,14 @@ function togglePasswordVisibility() {
   }
 }
 
+function getLastSelectedText() {
+  chrome.runtime.sendMessage({ action: 'getLastSelectedText' }, (response) => {
+    if (response && response.text && !elements.questionInput.value) {
+      elements.questionInput.value = response.text;
+    }
+  });
+}
+
 function tryFillSelectedText() {
   if (!currentConfig.autoFill) return;
 
@@ -169,7 +178,9 @@ function tryFillSelectedText() {
     if (!tabs[0]) return;
 
     chrome.tabs.sendMessage(tabs[0].id, { action: 'getSelectedText' }, (response) => {
-      if (response && response.text) {
+      if (chrome.runtime.lastError) {
+        console.log('Content script 未就绪或权限不足');
+      } else if (response && response.text && !elements.questionInput.value) {
         elements.questionInput.value = response.text;
       }
     });
