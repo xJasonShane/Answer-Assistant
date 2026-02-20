@@ -3,66 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>答题助手 - 设置</title>
+  <title>答题助手</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>答题助手</h1>
-      <p class="subtitle">设置</p>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">API 密钥配置</h2>
-      <div class="config-item">
-        <label for="apiUrl">API 地址</label>
-        <input type="text" id="apiUrl" placeholder="请输入 API 地址">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 17H9V15H11V17ZM11 13H9V7H11V13Z" fill="url(#gradient)"/>
+            <defs>
+              <linearGradient id="gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#667eea"/>
+                <stop offset="1" stop-color="#764ba2"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1>答题助手</h1>
+          <p class="subtitle">智能问答，即刻拥有</p>
+        </div>
       </div>
-      <div class="config-item">
-        <label for="apiKey">API 密钥</label>
-        <input type="password" id="apiKey" placeholder="请输入 API 密钥">
-      </div>
-      <div class="config-item">
-        <label for="modelName">模型名称</label>
-        <input type="text" id="modelName" placeholder="请输入模型名称">
-      </div>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">插件设置</h2>
-      <div class="config-item">
-        <label for="shortcutKey">快捷键</label>
-        <input type="text" id="shortcutKey" placeholder="例如: Ctrl+Shift+Q" readonly>
-        <p class="help-text">快捷键在浏览器扩展页面中配置</p>
-      </div>
-      <div class="config-item">
-        <label class="checkbox-label">
-          <input type="checkbox" id="directOutput">
-          <span>直接输出答案</span>
-        </label>
-      </div>
-      <div class="config-item">
-        <label class="checkbox-label">
-          <input type="checkbox" id="autoUpdate">
-          <span>自动更新插件</span>
-        </label>
+      <div class="header-right">
+        <button class="icon-btn" id="settingsBtn" title="设置">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="historyBtn" title="历史记录">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+        </button>
       </div>
     </div>
 
-    <div class="section">
-      <h2 class="section-title">使用说明</h2>
-      <div class="help-text">
-        <p>1. 在网页上选中问题文本</p>
-        <p>2. 按下快捷键（默认: <strong>Ctrl+Shift+Q</strong>，Mac: <strong>Command+Shift+Q</strong>）</p>
-        <p>3. 答案将直接显示在选中文本附近</p>
-        <p>4. 在浏览器扩展页面中可以自定义快捷键</p>
+    <div class="main-content" id="mainContent">
+      <div class="question-section">
+        <div class="input-wrapper">
+          <textarea id="questionInput" placeholder="请输入你的问题..." rows="3"></textarea>
+          <div class="input-actions">
+            <button class="icon-btn-small" id="clearBtn" title="清空">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <button class="btn-primary" id="searchBtn">
+              <span class="btn-text">搜索答案</span>
+              <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="answer-section" id="answerSection" style="display: none;">
+        <div class="answer-header">
+          <span class="answer-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            答案
+          </span>
+          <div class="answer-actions">
+            <button class="icon-btn-small" id="copyBtn" title="复制答案">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+            </button>
+            <button class="icon-btn-small" id="regenerateBtn" title="重新生成">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,4 23,10 17,10"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="answer-content" id="answerContent"></div>
+      </div>
+
+      <div class="loading-section" id="loadingSection" style="display: none;">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+        <p class="loading-text">正在思考中...</p>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <p class="empty-text">输入问题，让 AI 为你解答</p>
+        <p class="empty-hint">或在网页上选中文本，按 Ctrl+Shift+Q</p>
       </div>
     </div>
 
-    <button id="saveConfig" class="btn-primary">保存配置</button>
+    <div class="settings-content" id="settingsContent" style="display: none;">
+      <div class="settings-header">
+        <button class="icon-btn-small" id="backBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+          返回
+        </button>
+        <h2>设置</h2>
+      </div>
 
-    <div class="status-bar">
+      <div class="section">
+        <h3 class="section-title">API 配置</h3>
+        <div class="config-item">
+          <label for="apiUrl">API 地址</label>
+          <input type="text" id="apiUrl" placeholder="例如: https://api.openai.com/v1/chat/completions">
+        </div>
+        <div class="config-item">
+          <label for="apiKey">API 密钥</label>
+          <div class="password-input">
+            <input type="password" id="apiKey" placeholder="请输入 API 密钥">
+            <button class="toggle-password" id="togglePassword">
+              <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="config-item">
+          <label for="modelName">模型名称</label>
+          <input type="text" id="modelName" placeholder="例如: gpt-3.5-turbo">
+        </div>
+        <div class="config-item">
+          <label for="systemPrompt">系统提示词</label>
+          <textarea id="systemPrompt" rows="3" placeholder="自定义系统提示词（可选）"></textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">插件设置</h3>
+        <div class="config-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="autoFill">
+            <span>自动填充选中文本</span>
+          </label>
+        </div>
+        <div class="config-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="showInPage">
+            <span>在页面上显示答案</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">关于</h3>
+        <div class="about-info">
+          <p><strong>版本：</strong>1.1.0</p>
+          <p><strong>快捷键：</strong>Ctrl+Shift+Q</p>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="saveConfig">保存设置</button>
+    </div>
+
+    <div class="history-content" id="historyContent" style="display: none;">
+      <div class="history-header">
+        <button class="icon-btn-small" id="backFromHistoryBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+          返回
+        </button>
+        <h2>历史记录</h2>
+        <button class="icon-btn-small" id="clearHistoryBtn" title="清空历史">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3,6 5,6 21,6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="empty-history">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+          <p>暂无历史记录</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar">
       <span id="statusText">就绪</span>
     </div>
   </div>

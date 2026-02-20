@@ -1,5 +1,48 @@
+const DEFAULT_CONFIG = {
+  apiUrl: 'https://api.siliconflow.cn/v1/chat/completions',
+  apiKey: '',
+  modelName: 'Qwen/Qwen2.5-7B-Instruct',
+  systemPrompt: '你是一个专业的答题助手，请根据用户提供的问题给出准确、简洁的答案。',
+  autoFill: true,
+  showInPage: true
+};
+
 chrome.runtime.onInstalled.addListener(() => {
   console.log('答题助手已安装');
+  createContextMenu();
+});
+
+function createContextMenu() {
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: 'search-answer',
+      title: '使用答题助手搜索答案',
+      contexts: ['selection']
+    });
+  });
+}
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'search-answer' && info.selectionText) {
+    chrome.tabs.sendMessage(tab.id, {
+      action: 'triggerSearchWithText',
+      text: info.selectionText
+    }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.log('Content script not ready, injecting...');
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content/content.js']
+        }, () => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'triggerSearchWithText',
+            text: info.selectionText
+          });
+        });
+      }
+    });
+    chrome.action.openPopup();
+  }
 });
 
 chrome.commands.onCommand.addListener((command, tab) => {
@@ -34,9 +77,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function searchAnswer(question, config) {
   try {
-    const apiUrl = config.apiUrl;
+    const apiUrl = config.apiUrl || DEFAULT_CONFIG.apiUrl;
     const apiKey = config.apiKey;
-    const modelName = config.modelName || 'Qwen/Qwen2.5-7B-Instruct';
+    const modelName = config.modelName || DEFAULT_CONFIG.modelName;
+    const systemPrompt = config.systemPrompt || DEFAULT_CONFIG.systemPrompt;
+
+    if (!apiUrl || !apiKey) {
+      throw new Error('请先配置 API 地址和密钥');
+    }
 
     console.log('开始搜索答案:', { apiUrl, modelName, questionLength: question.length });
 
@@ -51,7 +99,7 @@ async function searchAnswer(question, config) {
         messages: [
           {
             role: 'system',
-            content: '你是一个专业的答题助手，请根据用户提供的问题给出准确、简洁的答案。'
+            content: systemPrompt
           },
           {
             role: 'user',
